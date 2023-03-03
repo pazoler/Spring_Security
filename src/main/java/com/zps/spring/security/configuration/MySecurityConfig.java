@@ -14,7 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -22,26 +26,35 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class MySecurityConfig {
 
+    @Autowired
+    DataSource dataSource;
+
     @Bean
-    public UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withDefaultPasswordEncoder()
-                .username("pavel")
-                .password("pavel")
-                .roles("EMPLOYEE")
-                .build());
-        manager.createUser(User.withDefaultPasswordEncoder()
-                .username("elena")
-                .password("elena")
-                .roles("HR")
-                .build());
-        manager.createUser(User.withDefaultPasswordEncoder()
-                .username("ivan")
-                .password("ivan")
-                .roles("MANAGER","HR")
-                .build());
+    public JdbcUserDetailsManager userDetailsService() {
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         return manager;
     }
+
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//        manager.createUser(User.withDefaultPasswordEncoder()
+//                .username("pavel")
+//                .password("pavel")
+//                .roles("EMPLOYEE")
+//                .build());
+//        manager.createUser(User.withDefaultPasswordEncoder()
+//                .username("elena")
+//                .password("elena")
+//                .roles("HR")
+//                .build());
+//        manager.createUser(User.withDefaultPasswordEncoder()
+//                .username("ivan")
+//                .password("ivan")
+//                .roles("MANAGER","HR")
+//                .build());
+//        return manager;
+//    }
 
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
